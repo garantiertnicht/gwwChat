@@ -10,6 +10,12 @@ import javafx.scene.layout.Priority;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * Adds a super-fancy Exception dialog.
+ * I know, this isn't best practise!
+ *
+ * @author garantiertnicht
+ */
 public class excHandler implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread t, Throwable exc) {
         try {

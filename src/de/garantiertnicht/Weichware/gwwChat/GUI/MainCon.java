@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.Timer;
 
 public class MainCon implements Initializable {
     @FXML private ListView<String> plyList;
@@ -37,16 +36,22 @@ public class MainCon implements Initializable {
     @FXML private TextField txt;
     @FXML private Button send;
 
+    //Content for Lists
     ObservableList<TextFlow> chatMsgs = null;
     ObservableList<String> names = null;
 
+    //Last Id
     String lastId = "";
 
+    //Defauld delay between refreshes
     int delay = 3000;
 
     Timeline refresh = new Timeline(new KeyFrame(Duration.millis(delay), new EventHandler<ActionEvent>() {
 
-
+        /**
+         * This is our Refresh-Job for fetching new Messages!
+         * @param e Advanced stuff
+         */
         @Override
         public void handle(ActionEvent e) {
             boolean plyRefreshed = false;
@@ -56,13 +61,26 @@ public class MainCon implements Initializable {
 
                 JsonArray msgLi = newMsgs.getJsonArray("messages");
 
-                if (msgLi == null)
+                if (msgLi == null) //Something gone Wrong. I dont care! I <3 it!
                     return;
 
+                //Read all new messages
                 for (int i = 0; i < msgLi.size(); i++) {
+                    //Nice Formatting stuff
                     TextFlow tf = new TextFlow();
+
+                    /* We could get:
+                     * uuid    Message UUID (for fetching next)
+                     * ply     Player Name
+                     * source  Type of Message
+                     * time    Unix Timestamp of message
+                     * msg     Hmm, I really dont know
+                     */
                     JsonObject msg = msgLi.getJsonObject(i);
 
+                    //Now the hard part: Formating different messages differently!
+
+                    //Player joined
                     if (msg.getString("source").equalsIgnoreCase("join")) {
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
@@ -76,6 +94,8 @@ public class MainCon implements Initializable {
                             plyRefreshed = true;
                             refreshPlyList();
                         }
+
+                    //Player left
                     } else if (msg.getString("source").equalsIgnoreCase("quit")) {
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
@@ -89,6 +109,8 @@ public class MainCon implements Initializable {
                             plyRefreshed = true;
                             refreshPlyList();
                         }
+
+                    //Proxy is shutting down
                     } else if (msg.getString("source").equalsIgnoreCase("shutdown")) {
                         Text t1 = new Text("~{");
                         t1.setFill(Color.DARKBLUE);
@@ -102,7 +124,11 @@ public class MainCon implements Initializable {
                         tf.getChildren().addAll(t1, t2, t3, t4);
                         chatMsgs.add(tf);
 
+                        //I dont want to find out what happens if we try to write messages now.
+                        //Sure is sure!
                         send.setDisable(true);
+
+                    //Proxy is starting again
                     } else if (msg.getString("source").equalsIgnoreCase("boot")) {
                         Text t1 = new Text("~{");
                         t1.setFill(Color.DARKBLUE);
@@ -117,6 +143,8 @@ public class MainCon implements Initializable {
                         chatMsgs.add(tf);
 
                         send.setDisable(false);
+
+                    //Most likly chat, or stuff that even I don't know.
                     } else {
                         Text t1 = new Text("~{");
                         t1.setFill(Color.DARKBLUE);
@@ -146,18 +174,18 @@ public class MainCon implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
 
+            //We may want some faster refresh rate. So let the user costumize it.
             Properties prop = new Properties();
             prop.setProperty("delay", "3000");
 
             Settings settings = new Settings("_chatDelay", prop);
             delay = Integer.parseInt(settings.properties.getProperty("delay"));
 
-            JsonObject plys = ImpCall.call("getServer/query/89.163.145.197/25565");
-
+            //Inital call of the player list
             refreshPlyList();
             plyList.setEditable(false);
 
-
+            //Get last Message UUID
             JsonObject msgs = ImpCall.call("chat/fetchChat");
             JsonArray msgLi = msgs.getJsonArray("messages");
 
@@ -167,6 +195,7 @@ public class MainCon implements Initializable {
 
             lastId = msgLi.getJsonObject(0).getString("uuid");
 
+            //Start fetching messages
             refresh.setCycleCount(Timeline.INDEFINITE);
             refresh.play();
 
@@ -177,6 +206,9 @@ public class MainCon implements Initializable {
         }
     }
 
+    /**
+     * Calles when we send our Message
+     */
     public void sendMsg() {
         try {
             JsonObject stat = ImpCall.call("chat/sendMessage", String.format("SOURCE=%s&TOKEN=%s&MESSAGE=%s&MODEL=%s",
@@ -198,6 +230,10 @@ public class MainCon implements Initializable {
         }
     }
 
+    /**
+     * Refresh our players
+     * @throws IOException If connection to API fails
+     */
     public void refreshPlyList() throws IOException {
         JsonObject plys = ImpCall.call("getServer/query/89.163.145.197/25565");
 

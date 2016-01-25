@@ -12,12 +12,24 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
 
+/**
+ * Contains some static Methods for connecting to the API.
+ * @author garantiertnicht
+ */
 public class ImpCall {
 
     static  {
+        //If you dont do this, CloudFlare will refuse to connect!
         System.setProperty("http.agent", "gwwChat/0.1");
     }
 
+    /**
+     * Calls the Specified IMP-v3 Page.
+     * @param apiPage The API-Page to add
+     * @param postData Some fancy Post data, needed for Login and Chat
+     * @return A JSON-Object of the returned data. "Status" Should be checked (success or error)
+     * @throws IOException If the connection fails
+     */
     public static JsonObject call(String apiPage, String postData) throws IOException {
         URL url = new URL(String.format("https://api-v3.imperium1871.de/%s", apiPage));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -46,6 +58,12 @@ public class ImpCall {
         return obj;
     }
 
+    /**
+     * Calls the Specified IMP-v3 Page.
+     * @param apiPage The API-Page to add
+     * @return A JSON-Object of the returned data. "Status" Should be checked (success or error)
+     * @throws IOException If the connection fails
+     */
     public static JsonObject call(String apiPage) throws IOException {
         URL url = new URL(String.format("https://api-v3.imperium1871.de/%s", apiPage));
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

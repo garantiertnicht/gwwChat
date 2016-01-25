@@ -7,6 +7,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * This class is used to manage the GUI-Stuff one line easier.<br/>
+ * I tend to do a over complicated solution, if I can remove one line of code…
+ * @author garantiertnicht
+ */
 public class GuiManager {
     public Stage stage = null;
 

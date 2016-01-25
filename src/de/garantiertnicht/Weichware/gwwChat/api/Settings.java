@@ -6,6 +6,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
 
+
+/**
+ * A class wish manages the settings.
+ * I may rethink this logic!
+ *
+ * @deprecated I dont think this class is well desinged. It will change in near Futute!
+ * @author garantiertnicht
+ */
+
+@Deprecated
 public class Settings {
 
     public Properties properties;
@@ -28,6 +38,7 @@ public class Settings {
 
         String osName = System.getProperty("os.name");
 
+        //I wish we could have a System.getProperty for an defauld Junk-Folder
         if(osName.contains("OS X")) {
             uri += seperator + "Library" + seperator + "Application Support";
         } else if(osName.contains("Windows")) {
