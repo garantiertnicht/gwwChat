@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.garantiertnicht.Weichware.gwwChat.GUI.LoginCon">
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+         <children>
+            <TextField id="key" fx:id="pin" alignment="CENTER" layoutX="91.0" layoutY="293.0" onKeyReleased="#pinUpdate" promptText="123456" />
+            <Button id="ok" fx:id="ok" defaultButton="true" disable="true" layoutX="272.0" layoutY="293.0" mnemonicParsing="false" onAction="#login" text="OK" />
+            <Hyperlink layoutX="102.0" layoutY="371.0" onAction="#IMPpermsPage" text="External Permissions anzeigen" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="39.0" layoutY="14.0" prefHeight="24.0" prefWidth="322.0" text="Anmelden mit Imperium 1871" textAlignment="CENTER">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_CENTER" layoutX="16.0" layoutY="56.0" prefHeight="83.0" prefWidth="369.0" text="Um diese Anwendung nutzen zu können, müssen Sie sich zuerst anmelden. Geben Sie dazu Ihren Pin aus den External Permissions unten ein." textAlignment="CENTER" wrapText="true" />
+            <ProgressIndicator fx:id="spin" layoutX="175.0" layoutY="174.0" visible="false" />
+            <CheckBox fx:id="autolog" layoutX="90.0" layoutY="328.0" mnemonicParsing="false" text="Automagischen Login aktivieren" />
+         </children>
+      </Pane>
+   </children>
+</GridPane>
