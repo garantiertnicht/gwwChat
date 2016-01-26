@@ -46,23 +46,8 @@ public class LoginCon implements Initializable {
 
         //If this is the first start, we sugesst to remember the code.
         //If the User don't wants this, we will not turn on the Checkbox.
-        Settings settings = null;
-
-        try {
-            settings = new Settings("_login", getDefaultLoginProperties(pin.getText(), autolog.isSelected()));
-
-            if(!settings.properties.getProperty("pin").equalsIgnoreCase("0")) {
-                pin.setText(settings.properties.getProperty("pin"));
-                login(new ActionEvent());
-            }
-
-            if(Main.first)
-                autolog.setSelected(true);
-
-        } catch (IOException e) {
-            new excHandler().uncaughtException(Thread.currentThread(), e);
-            return;
-        }
+        if(Main.first)
+            autolog.setSelected(true);
     }
 
     /**
