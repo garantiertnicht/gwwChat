@@ -8,7 +8,7 @@ import java.util.Properties;
 
 
 /**
- * A class wish manages the settings.
+ * A class wich manages the settings.
  * I may rethink this logic!
  *
  * @deprecated I dont think this class is well desinged. It will change in near Futute!
@@ -137,6 +137,4 @@ public class Settings {
         properties.store(out, "");
         out.close();
     }
-
-
 }

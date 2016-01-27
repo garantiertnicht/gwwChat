@@ -25,6 +25,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Properties;
@@ -42,6 +43,8 @@ public class MainCon implements Initializable {
 
     //Last Id
     String lastId = "";
+
+    private static int unreadMsgs = 0;
 
     //Defauld delay between refreshes
     int delay = 3000;
@@ -82,6 +85,7 @@ public class MainCon implements Initializable {
 
                     //Player joined
                     if (msg.getString("source").equalsIgnoreCase("join")) {
+                        unreadMsgs++;
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
                         Text t2 = new Text(" hat den Server betreten.");
@@ -97,6 +101,7 @@ public class MainCon implements Initializable {
 
                     //Player left
                     } else if (msg.getString("source").equalsIgnoreCase("quit")) {
+                        unreadMsgs++;
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
                         Text t2 = new Text(" hat den Server verlassen.");
@@ -146,6 +151,7 @@ public class MainCon implements Initializable {
 
                     //Most likly chat, or stuff that even I don't know.
                     } else {
+                        unreadMsgs++;
                         Text t1 = new Text("~{");
                         t1.setFill(Color.DARKBLUE);
                         Text t2 = new Text(msg.getString("ply"));
@@ -163,6 +169,7 @@ public class MainCon implements Initializable {
                 chat.setItems(chatMsgs);
 
                 lastId = msgLi.getJsonObject(msgLi.size() - 1).getString("uuid");
+                updateNotify();
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
@@ -198,6 +205,8 @@ public class MainCon implements Initializable {
             //Start fetching messages
             refresh.setCycleCount(Timeline.INDEFINITE);
             refresh.play();
+
+            msgRead();
 
             send.setDefaultButton(true);
             chat.scrollTo(chat.getItems().size() - 1);
@@ -249,5 +258,25 @@ public class MainCon implements Initializable {
         }
 
         plyList.setItems(names);
+    }
+
+    public void setNotify(String i) {
+        try {
+            Class c = Class.forName("com.apple.eawt.Application");
+            Object retrn = c.getMethod("getApplication").invoke(null);
+            c.getMethod("setDockIconBadge", java.lang.String.class).invoke(retrn, i);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {e.printStackTrace();}
+    }
+
+
+    public void updateNotify() {
+        int i = 0;
+        i += unreadMsgs;
+        setNotify(i == 0 ? null : Integer.toString(i));
+    }
+
+    public void msgRead() {
+        unreadMsgs = 0;
+        updateNotify();
     }
 }

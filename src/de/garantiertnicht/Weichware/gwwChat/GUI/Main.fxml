@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 
-<GridPane alignment="center" hgap="0" vgap="0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.garantiertnicht.Weichware.gwwChat.GUI.MainCon">
+<GridPane alignment="center" hgap="0" onMouseClicked="#msgRead" onMouseEntered="#msgRead" onMouseExited="#msgRead" onMouseMoved="#msgRead" onMousePressed="#msgRead" onMouseReleased="#msgRead" vgap="0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.garantiertnicht.Weichware.gwwChat.GUI.MainCon">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />
