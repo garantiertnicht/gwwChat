@@ -260,6 +260,10 @@ public class MainCon implements Initializable {
         plyList.setItems(names);
     }
 
+    /**
+     * Does actualy call the Badge update Method.
+     * @param i Set the Badge to this.
+     */
     public void setNotify(String i) {
         try {
             Class c = Class.forName("com.apple.eawt.Application");
@@ -269,12 +273,18 @@ public class MainCon implements Initializable {
     }
 
 
+    /**
+     * Calls a Badge update.
+     */
     public void updateNotify() {
         int i = 0;
         i += unreadMsgs;
         setNotify(i == 0 ? null : Integer.toString(i));
     }
 
+    /**
+     * Marks all Chat messages as readen.
+     */
     public void msgRead() {
         unreadMsgs = 0;
         updateNotify();
