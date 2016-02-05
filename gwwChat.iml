@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="org.glassfish:javax.json:1.0.4" level="project" />
+    <orderEntry type="library" name="com.github.mpkorstanje:simmetrics-core:4.1.0" level="project" />
   </component>
 </module>

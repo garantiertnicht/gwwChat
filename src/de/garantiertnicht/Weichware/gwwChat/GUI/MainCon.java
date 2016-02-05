@@ -1,5 +1,6 @@
 package de.garantiertnicht.Weichware.gwwChat.GUI;
 
+import de.garantiertnicht.Weichware.gwwChat.FilterList;
 import de.garantiertnicht.Weichware.gwwChat.Main;
 import de.garantiertnicht.Weichware.gwwChat.api.ImpCall;
 import de.garantiertnicht.Weichware.gwwChat.api.Settings;
@@ -40,6 +41,8 @@ public class MainCon implements Initializable {
     //Content for Lists
     ObservableList<TextFlow> chatMsgs = null;
     ObservableList<String> names = null;
+
+    private boolean reply = false;
 
     //Last Id
     String lastId = "";
@@ -85,7 +88,8 @@ public class MainCon implements Initializable {
 
                     //Player joined
                     if (msg.getString("source").equalsIgnoreCase("join")) {
-                        unreadMsgs++;
+                        if(!msg.getString("ply").equalsIgnoreCase(Main.login.getName()) && reply)
+                            unreadMsgs++;
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
                         Text t2 = new Text(" hat den Server betreten.");
@@ -101,7 +105,8 @@ public class MainCon implements Initializable {
 
                     //Player left
                     } else if (msg.getString("source").equalsIgnoreCase("quit")) {
-                        unreadMsgs++;
+                        if(!msg.getString("ply").equalsIgnoreCase(Main.login.getName()) && reply)
+                            unreadMsgs++;
                         Text t1 = new Text(msg.getString("ply"));
                         t1.setFill(Color.BLUE);
                         Text t2 = new Text(" hat den Server verlassen.");
@@ -149,9 +154,25 @@ public class MainCon implements Initializable {
 
                         send.setDisable(false);
 
+                    //Ignore gwwBot-MSGs
+                    } else if (msg.getString("source").equalsIgnoreCase("gwwBot")) {
+
                     //Most likly chat, or stuff that even I don't know.
                     } else {
-                        unreadMsgs++;
+                        if(!FilterList.isValidMsg(msg.getString("ply") + " " + msg.getString("msg"))) {
+                            if(reply) {
+                                //TODO included later again, after PMs possible
+                               /* JsonObject stat = ImpCall.call("chat/sendMessage", String.format("SOURCE=%s&TOKEN=%s&MESSAGE=%s&MODEL=%s",
+                                        URLEncoder.encode("gwwBot"), URLEncoder.encode(Main.login.getToken()),
+                                        URLEncoder.encode("Die Nachicht \"" + msg.getString("msg") + "\" wurde von gwwChat " + "gefiltert."),
+                                        URLEncoder.encode(Main.login.getDevice()))); */
+                            }
+                            continue;
+                        }
+
+
+                        if(!msg.getString("ply").equalsIgnoreCase(Main.login.getName()) && reply)
+                            unreadMsgs++;
                         Text t1 = new Text("~{");
                         t1.setFill(Color.DARKBLUE);
                         Text t2 = new Text(msg.getString("ply"));
@@ -167,7 +188,7 @@ public class MainCon implements Initializable {
                 }
 
                 chat.setItems(chatMsgs);
-
+                reply = true;
                 lastId = msgLi.getJsonObject(msgLi.size() - 1).getString("uuid");
                 updateNotify();
             } catch (Exception exc) {
