@@ -28,35 +28,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.garantiertnicht.Weichware.gwwChat.GUI;
+package de.garantiertnicht.Weichware.gwwChat;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import org.simmetrics.metrics.JaroWinkler;
 
-import java.io.IOException;
+public class FilterList {
+    private static String[] blacks = {"gari", "gary", "martin", "marcel", "harry", "nottingham", "garantiertmel", "girls", "garantiertmarcel", "cel"};
 
-/**
- * This class is used to manage the GUI-Stuff one line easier.<br/>
- * I tend to do a over complicated solution, if I can remove one line of code…
- * @author garantiertnicht
- */
-public class GuiManager {
-    public Stage stage = null;
+    public static boolean isValidMsg(String msg) {
+        msg = msg.toLowerCase();
 
-    public GuiManager(Stage primaryStage) throws IOException {
-        this.stage = primaryStage;
-    }
+        JaroWinkler alg = new JaroWinkler();
 
-    public void changeGui(String newGui, String title, boolean resizable) throws IOException {
-        stage.close();
+        for(String s: msg.split(" ")) {
+            if(alg.distance(s, "garantiertnicht") < 0.1)
+                continue;
+            if(s.equals("garantierthi"))
+                continue;
+            if(alg.distance(s, "gara") < 0.1)
+                return false;
+            for(String b : blacks)
+                if(alg.distance(s, b) < 0.1)
+                    return false;
+        }
 
-        Parent root = FXMLLoader.load(getClass().getResource(String.format("/de/garantiertnicht/Weichware/gwwChat/GUI/%s.fxml", newGui)));
+        String msg1 = "";
+        for(char a : msg.toCharArray())
+            if(Character.isLetter(a) || a == ' ')
+                msg1 += a;
 
-        stage.setTitle(title);
-        stage.setScene(new Scene(root));
-        stage.setResizable(resizable);
-        stage.show();
+        for(String s : msg.split(" ")) {
+            if(alg.distance(s, "garantiertnicht") < 0.1)
+                continue;
+            if(s.equals("garantierthi"))
+                continue;
+            if(alg.distance(s, "gara") < 0.1)
+                return false;
+            for(String b : blacks)
+                if(alg.distance(s, b) < 0.1)
+                    return false;
+        }
+
+        msg1 = "";
+        for(char a : msg.toCharArray())
+            if(Character.isLetter(a))
+                msg1 += a;
+
+        if(!msg1.contains("garantiertnicht"))
+            for(String b : blacks)
+                if (msg1.contains(b))
+                    return false;
+
+        return true;
     }
 }
